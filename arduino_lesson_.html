@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>버튼 신호등과 멜로디 부저 | 아두이노 수업 기록</title>
+<style>
+:root{--ink:#183143;--muted:#597082;--line:#dae5ec;--blue:#176da9}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:#f2f6f9;font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;line-height:1.8}header{background:#112e41;color:#fff;padding:56px max(24px,calc((100vw - 1060px)/2)) 44px}.eyebrow{font-size:12px;letter-spacing:.18em;font-weight:bold;color:#94d1e2}h1{font-size:clamp(29px,4vw,44px);line-height:1.4;margin:15px 0}header p{max-width:760px;color:#c5d9e6}.tags{display:flex;gap:9px;flex-wrap:wrap}.tags span{padding:3px 12px;border:1px solid #456374;border-radius:20px;font-size:12px}nav{position:sticky;top:0;background:#ffffffee;border-bottom:1px solid var(--line);padding:12px;display:flex;justify-content:center;gap:23px;z-index:3;flex-wrap:wrap}a{color:var(--blue)}nav a{text-decoration:none;font-weight:bold;font-size:13px}main{max-width:1100px;margin:auto;padding:26px 20px 55px}section{background:#fff;padding:30px;border:1px solid var(--line);border-radius:18px;margin-bottom:22px;scroll-margin-top:85px}h2{margin:4px 0 17px;font-size:25px;letter-spacing:-.04em}h3{font-size:17px;margin:23px 0 10px}p{margin:10px 0}.num{color:var(--blue);font-size:12px;font-weight:bold;letter-spacing:.08em}.muted,.fine{color:var(--muted)}.fine{font-size:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.card{background:#f3f7fa;padding:20px;border-radius:12px}.card h3:first-child{margin-top:0}.note{background:#fff7e6;border-left:4px solid #d8a43c;border-radius:0 8px 8px 0;padding:14px 18px;margin:18px 0}.ok{background:#eff8f3;border-color:#298464}.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:22px 0}.step{background:#f3f7fa;text-align:center;border-radius:12px;padding:17px 8px;font-size:12px}.step b{display:block;font-size:15px}.dot{width:17px;height:17px;border-radius:50%;margin:0 auto 10px}.g{background:#1f9f6c}.y{background:#e4b130}.r{background:#dc5056}table{width:100%;border-collapse:collapse;font-size:14px}td,th{border-bottom:1px solid var(--line);padding:12px 10px;text-align:left;vertical-align:top}th{background:#eef4f8;color:#426173}.table-wrap{overflow-x:auto}code{font-family:Consolas,monospace;background:#eaf1f6;padding:2px 5px;border-radius:4px}pre{background:#112b3d;color:#e1edf4;padding:20px;border-radius:12px;overflow:auto;line-height:1.65;font-size:13px}pre code{padding:0;background:none;color:inherit}.codebox{max-height:650px}.diagram{border:1px solid var(--line);border-radius:12px;overflow:hidden}.diagram svg{width:100%;height:auto;display:block}button{font:inherit;font-size:14px;font-weight:bold;border:0;border-radius:8px;padding:10px 17px;background:var(--blue);color:#fff;cursor:pointer}button.secondary{background:#e4edf3;color:#294d65}button:disabled{opacity:.5;cursor:wait}a:focus-visible,button:focus-visible{outline:3px solid #daa638;outline-offset:3px}.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:17px 0}.signal{background:#15364b;padding:12px;border-radius:18px;width:82px;display:grid;gap:10px;flex-shrink:0}.lamp{height:52px;border-radius:50%;background:#344e60;border:2px solid #486579}.lamp.active.red{background:#ef5359;box-shadow:0 0 16px #ef535966}.lamp.active.yellow{background:#f1bf39;box-shadow:0 0 16px #f1bf3966}.lamp.active.green{background:#28c481;box-shadow:0 0 16px #28c48166}.sim{display:flex;gap:25px;align-items:center}.big{font-size:23px;font-weight:bold}progress{width:100%;height:12px;accent-color:var(--blue)}li{margin:7px 0}.pill{font-size:12px;background:#fff1d6;color:#886416;border-radius:20px;padding:4px 11px}.footer{text-align:center;font-size:12px;color:var(--muted)}#copyStatus{font-size:13px;color:#18825a}
+@media(max-width:720px){header{padding:32px 22px}main{padding:16px 12px}section{padding:22px 17px}.grid{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.step:last-child{grid-column:1/-1}nav{position:static;gap:8px 18px}h2{font-size:22px}.sim{gap:15px}.big{font-size:19px}.diagram{overflow-x:auto}.diagram svg{min-width:620px}}
+@media print{body{background:#fff;font-size:10pt}header{background:#fff;color:#123147;padding:20px 0;border-bottom:2px solid #123147}header p,.eyebrow{color:#4a6475}h1{font-size:26pt}.tags span{border-color:#bbb}nav,.actions,.no-print{display:none!important}main{padding:0;max-width:none}section{border:0;border-radius:0;padding:20px 0;margin:0}h2,h3{break-after:avoid}.card,.note,.flow,.diagram,table{break-inside:avoid}.codebox{max-height:none}pre{overflow:visible;white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f4f4;color:#111;border:1px solid #ddd;font-size:8pt}.print-break{break-before:page}a{color:inherit;text-decoration:none}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style></head><body>
+<header><div class="eyebrow">ARDUINO LAB NOTES · 2026.10.23</div><h1>버튼으로 제어하는 신호등<br>그리고 15초 멜로디 부저</h1><p>핀 연결부터 버튼 입력, 부저 연주, 오류 해결까지. 오늘 실습한 내용을 다시 따라 할 수 있도록 정리한 수업 기록입니다.</p><div class="tags"><span>Arduino UNO</span><span>3색 LED 모듈</span><span>푸시 버튼</span><span>2핀 부저</span><span>최종 코드 포함</span></div></header>
+<nav aria-label="목차"><a href="#summary">완성 동작</a><a href="#wiring">배선</a><a href="#button">버튼·GND</a><a href="#buzzer">부저</a><a href="#trouble">오류 해결</a><a href="#code">최종 코드</a><a href="#check">실습 점검</a></nav>
+<main>
+<section id="summary"><span class="num">01 / 오늘의 결과</span><h2>버튼 한 번으로 신호와 소리를 순서대로 제어하기</h2><p>최종 목표는 <strong>초록불로 대기</strong>하다가 버튼을 누르면 다음 순서를 한 번 실행하고 초록불로 돌아오는 것입니다.</p><div class="flow"><div class="step"><div class="dot g"></div><b>초록불 유지</b>버튼 입력 대기</div><div class="step"><div class="dot y"></div><b>노란불 1초</b>소리 없음</div><div class="step"><div class="dot r"></div><b>빨간불 15초</b>멜로디 재생</div><div class="step"><div class="dot y"></div><b>노란불 1초</b>소리 꺼짐</div><div class="step"><div class="dot g"></div><b>초록불 복귀</b>다음 입력 대기</div></div><div class="grid"><div class="card"><h3>오늘 확인한 내용</h3><ul><li>세 LED는 <code>HIGH</code>일 때 켜집니다.</li><li>버튼을 누르면 신호 순서가 실행됩니다.</li><li>색상과 핀 번호를 실제 배선에 맞추자 정상 동작했습니다.</li><li>최종 배선은 빨강 8번 · 노랑 9번 · 초록 10번입니다.</li></ul></div><div class="card"><h3>확인이 남은 내용</h3><ul><li>부저의 정확한 모델·능동/수동 종류·정격</li><li>최종 15초 악보 코드의 실제 보드 연주</li><li>신호등 모듈의 공통 전원 단자 사양</li></ul><p class="fine">부저 시험 결과와 최종 코드의 업로드 성공 여부는 대화에서 확인되지 않았습니다.</p></div></div><div class="note">처음에는 빨간불 대기·초록불 점등 방식으로 시작했고, 마지막에는 <strong>초록불 대기 / 빨간불 15초 연주</strong>로 변경했습니다. 이 문서는 책상 위 교육용 모형의 실습 기록입니다.</div>
+<div class="card no-print"><h3>동작 미리보기</h3><div class="sim"><div class="signal" aria-hidden="true"><div id="lamp-red" class="lamp red"></div><div id="lamp-yellow" class="lamp yellow"></div><div id="lamp-green" class="lamp green active"></div></div><div style="flex:1"><div id="simState" class="big" aria-live="polite">초록불 · 입력 대기</div><p id="simDetail" class="muted">버튼을 누르면 실제 시간 순서로 움직입니다. 화면 미리보기는 무음입니다.</p><progress id="simProgress" max="17" value="0" aria-label="신호 진행률"></progress><div class="actions"><button id="simStart">버튼 누르기</button><button id="simReset" class="secondary">초기화</button></div></div></div></div></section>
+<section id="wiring"><span class="num">02 / 준비와 배선</span><h2>색상보다 핀 번호와 단자 글자를 먼저 확인</h2><p>준비물: UNO, USB 케이블, 3색 신호등 모듈, 푸시 버튼, 2핀 부저, 브레드보드, 점퍼선. 수동 피에조 부저 연결 예시에는 <strong>1kΩ 저항 1개</strong>를 사용합니다.</p><div class="table-wrap"><table><thead><tr><th>아두이노 핀</th><th>연결 대상</th><th>메모</th></tr></thead><tbody><tr><td>D8</td><td>R · 빨간불</td><td>HIGH 켜짐 / LOW 꺼짐</td></tr><tr><td>D9</td><td>Y · 노란불</td><td>HIGH 켜짐 / LOW 꺼짐</td></tr><tr><td>D10</td><td>G · 초록불</td><td>G는 초록색 신호 단자이며 GND가 아닙니다.</td></tr><tr><td>D2</td><td>버튼 한 접점</td><td>다른 접점은 GND / INPUT_PULLUP</td></tr><tr><td>D11</td><td>1kΩ 저항 → 부저 +</td><td>소형 수동 피에조 부저를 가정한 예시</td></tr><tr><td>GND</td><td>버튼 다른 접점 / 부저 −</td><td>브레드보드 − 레일을 통해 공유</td></tr><tr><td>모듈 공통 단자</td><td>실제 제품 사양에 따라 연결</td><td>이 문서만 보고 V → 5V로 결정하지 않습니다.</td></tr></tbody></table></div><h3>선이 겹치지 않는 연결도</h3><div class="diagram"><svg viewBox="0 0 1000 500" role="img" aria-label="8번 빨강, 9번 노랑, 10번 초록. 2번은 버튼을 통해 GND. 11번은 1킬로옴 저항을 통해 부저 플러스. 부저 마이너스는 GND." xmlns="http://www.w3.org/2000/svg"><rect width="1000" height="500" rx="16" fill="#fff"/><g font-family="Malgun Gothic,sans-serif" font-size="21" fill="#223e50"><text x="35" y="40" font-weight="bold">아두이노 핀</text><text x="735" y="40" font-weight="bold">부품 단자</text><rect x="35" y="62" width="140" height="46" rx="8" fill="#edf3f8"/><text x="105" y="93" text-anchor="middle" font-weight="bold">D8</text><path d="M175 85H710" stroke="#cf4247" stroke-width="5"/><text x="735" y="93" fill="#cf4247">R · 빨간불</text><rect x="35" y="127" width="140" height="46" rx="8" fill="#edf3f8"/><text x="105" y="158" text-anchor="middle" font-weight="bold">D9</text><path d="M175 150H710" stroke="#b98200" stroke-width="5"/><text x="735" y="158" fill="#b98200">Y · 노란불</text><rect x="35" y="192" width="140" height="46" rx="8" fill="#edf3f8"/><text x="105" y="223" text-anchor="middle" font-weight="bold">D10</text><path d="M175 215H710" stroke="#16845a" stroke-width="5"/><text x="735" y="223" fill="#16845a">G · 초록불</text><path d="M175 290H405M495 290H710M405 290L477 263" fill="none" stroke="#2474af" stroke-width="5"/><circle cx="405" cy="290" r="5" fill="#2474af"/><circle cx="495" cy="290" r="5" fill="#2474af"/><text x="450" y="247" text-anchor="middle" font-size="17">버튼 접점</text><path d="M175 365H370M500 365H710" stroke="#8963b2" stroke-width="5"/><rect x="370" y="350" width="130" height="30" rx="5" fill="#fff1d6" stroke="#a47d32" stroke-width="2"/><text x="435" y="337" text-anchor="middle" font-size="17">1kΩ 저항</text><path d="M175 435H710" stroke="#4c5c68" stroke-width="5"/><rect x="35" y="264" width="140" height="46" rx="8" fill="#edf3f8"/><text x="105" y="295" text-anchor="middle" font-weight="bold">D2</text><text x="735" y="295">GND</text><rect x="35" y="339" width="140" height="46" rx="8" fill="#edf3f8"/><text x="105" y="370" text-anchor="middle" font-weight="bold">D11</text><text x="735" y="370">부저 +</text><rect x="35" y="409" width="140" height="46" rx="8" fill="#edf3f8"/><text x="105" y="440" text-anchor="middle" font-weight="bold">GND</text><text x="735" y="440">부저 −</text><text x="35" y="483" font-size="15" fill="#5a7180">연결 관계도입니다. 소켓 위치는 실제 보드의 핀 번호를 확인하세요. 모듈 공통 전원선은 별도 확인이 필요합니다.</text></g></svg></div><div class="note"><strong>이전 안내의 정정:</strong> 처음 받은 그림은 V·GND 표시가 서로 맞지 않았고, 생성된 배선 사진에도 핀 위치 오류가 있었습니다. 실제 실습에서는 HIGH 점등을 확인했습니다. <strong>현재 정상 동작하는 모듈 전원 배선은 유지</strong>하고, 처음부터 배선할 때는 제품 사양을 확인하세요. 이 연결도에서는 미확인 공통 전원선을 생략했습니다.</div><p>사용자는 신호등 키트에 외부 저항이 필요 없다고 알려주었습니다. 따라서 이 실습에서는 LED 신호선에 외부 저항을 추가하지 않는 구성을 기록합니다. <strong>저항 내장 여부는 사진으로 확인되지 않았으므로 다른 모듈에 그대로 적용하지 마세요.</strong></p></section>
+<section id="button"><span class="num">03 / 버튼 입력과 접지</span><h2>버튼을 누르면 LOW가 되는 이유</h2><div class="grid"><div><p><code>pinMode(button, INPUT_PULLUP)</code>은 내부 풀업 저항을 사용하는 설정입니다.</p><table><thead><tr><th>버튼 상태</th><th>입력값</th></tr></thead><tbody><tr><td>놓았을 때</td><td>HIGH</td></tr><tr><td>눌렀을 때</td><td>LOW · D2가 GND에 연결됨</td></tr></tbody></table><p>버튼용 외부 풀업 저항은 필요 없습니다. 30ms 기다린 뒤 다시 읽어 접점 흔들림으로 인한 오작동을 줄입니다.</p></div><div class="card"><h3>4핀 버튼 연결</h3><ul><li>눌렀을 때 연결되는 <strong>서로 다른 두 접점</strong>을 사용합니다.</li><li>일반적인 4핀 택트 버튼은 대각선 두 다리로 연결할 수 있습니다.</li><li>같은 접점의 두 다리는 평소에도 연결되어 있으므로 피합니다.</li><li>브레드보드 중앙 홈을 가로질러 꽂고 두 접점이 같은 연결 행에 묶이지 않게 합니다.</li><li>보드의 RESET 버튼은 이번 입력 버튼이 아닙니다.</li></ul></div></div><h3>GND 구멍이 부족할 때</h3><pre><code>아두이노 GND ── 브레드보드 − 레일
+                          ├── 버튼의 GND 쪽 접점
+                          └── 부저의 − 단자</code></pre><p>한 구멍에 여러 선을 억지로 넣지 않고, <strong>전기적으로 이어진 레일의 서로 다른 구멍</strong>에 꽂습니다. 레일은 중앙에서 끊어져 있거나 좌우가 분리될 수 있으니 필요한 구간은 점퍼선으로 연결합니다. 파란색 표시 자체가 접지를 만드는 것은 아니며 UNO의 GND와 연결해야 합니다.</p><div class="note ok">최종 코드는 동작 중 추가 입력을 무시합니다. 버튼을 계속 누르고 있어도 한 번만 실행하고, 놓은 상태가 30ms 유지되어야 다음 입력을 받을 수 있습니다.</div></section>
+<section id="buzzer"><span class="num">04 / 소리 만들기</span><h2>부저는 음의 주파수와 길이로 연주합니다</h2><p>사진에서 확인한 부품은 위에 구멍이 있는 검은 원통형의 <strong>2핀 부저</strong>입니다. 외형만으로 능동·수동 종류는 확정하지 않았습니다. 아래 연주 코드는 <strong>수동 피에조 부저 기준</strong>입니다.</p><div class="grid"><div class="card"><h3>연결</h3><p><strong>D11 → 1kΩ 저항 → 부저 +</strong><br><strong>부저 − → GND</strong></p><p class="fine">1kΩ은 부저 선에 직렬로 넣는 전류 제한용 예시입니다. 모든 부저의 정격을 대신하는 값은 아니며 소리가 작아질 수 있습니다. 극성은 실제 + 표시나 제품 자료를 확인하세요.</p></div><div class="card"><h3>핵심 함수</h3><p><code>tone(11, 1000)</code> : 1000Hz 출력<br><code>tone(11, 440, 500)</code> : 440Hz를 500ms 출력<br><code>noTone(11)</code> : 소리 끄기</p><p class="fine">Hz는 음의 높이, ms는 시간을 나타냅니다. 1000ms = 1초입니다.</p></div></div><p>수동 부저는 여러 높이의 음을 만들 수 있습니다. 능동 부저는 자체 발진 회로가 있어 같은 코드로 멜로디가 제대로 나오지 않을 수 있습니다. 종류와 정격이 다르면 구동 방법도 달라집니다.</p><h3>부저 단독 테스트 코드</h3><pre><code>const int buzzer = 11;
+void setup() {
+  pinMode(buzzer, OUTPUT);
+}
+void loop() {
+  tone(buzzer, 1000);
+  delay(1000);
+  noTone(buzzer);
+  digitalWrite(buzzer, LOW);
+  delay(1000);
+}</code></pre><p class="muted">1초 소리 → 1초 무음이 반복되는지 확인합니다. 이 코드는 기존 신호등 프로그램을 대체하므로 시험 후 최종 코드를 다시 업로드하세요.</p><p class="fine">함수 참고: <a href="https://docs.arduino.cc/language-reference/en/functions/advanced-io/tone/">Arduino 공식 tone() 문서</a> · <a href="https://docs.arduino.cc/built-in-examples/digital/toneMelody/">공식 멜로디 예제</a></p></section>
+<section id="trouble"><span class="num">05 / 문제 해결 기록</span><h2>현상을 보고 원인을 좁혀가기</h2><div class="table-wrap"><table><thead><tr><th>관찰한 현상</th><th>확인·수정한 내용</th><th>배운 점</th></tr></thead><tbody>
+<tr><td>LOW 코드에서 불이 안 켜짐</td><td>HIGH/LOW 반복 시험 후 HIGH 고정 시험으로 세 LED 점등 확인</td><td>부품의 점등 논리를 먼저 확인</td></tr>
+<tr><td>노랑 대기 → 초록 1초 → 빨강 5초</td><td>당시 실제 배선은 8=노랑, 9=초록, 10=빨강. 핀 설정을 맞추자 정상 동작</td><td>코드의 이름과 실제 색이 맞아야 함</td></tr>
+<tr><td>배선을 빨강 8·노랑 9·초록 10으로 변경</td><td>red=8, yellow=9, green=10으로 코드도 복원</td><td>배선과 코드를 함께 확인</td></tr>
+<tr><td>버튼을 누르면 빨간불만 꺼짐</td><td>버튼 입력은 인식되는 단서. LED 배선·점등 방식을 따로 검사</td><td>입력 문제와 출력 문제를 구분</td></tr>
+<tr><td>GND 구멍 부족</td><td>브레드보드 − 레일을 GND에 연결해 공유</td><td>여러 부품이 공통 접지 사용 가능</td></tr>
+<tr><td>코드 오류 발생</td><td>구체적인 오류 메시지는 받지 못함. 단순 코드와 복사 문자 점검 안내</td><td>오류 원인은 확정하지 않고 메시지로 확인</td></tr>
+</tbody></table></div><div class="note"><strong>복사 문자 점검:</strong> 대화에 <code>&amp;#x20;</code>이나 <code>INPUT\_PULLUP</code>이 섞인 적이 있습니다. 전자는 지우고 후자는 <code>INPUT_PULLUP</code>으로 고칩니다. 이 문서의 복사 버튼과 코드 다운로드에는 해당 문자가 없습니다.</div><h3>세 LED를 모두 켜는 테스트 코드</h3><pre><code>void setup() {
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  digitalWrite(8, HIGH);
+  digitalWrite(9, HIGH);
+  digitalWrite(10, HIGH);
+}
+void loop() {}</code></pre></section>
+<section id="code" class="print-break"><span class="num">06 / 최종 코드</span><h2>초록 대기 · 빨강 15초 멜로디</h2><span class="pill">실제 보드 검증 전</span><p>사용자가 제공한 「인생의 회전목마」 악보 이미지의 <strong>첫째·둘째 줄을 보고 옮긴 발췌</strong>입니다. 전체 악보는 포함하지 않으며 앞부분만 반복하지 않고 뒤 구간까지 한 번 이어서 연주합니다. 사진 판독에 따른 음과 길이의 오차는 실제 연주로 확인해야 합니다.</p><div class="note">발췌 구간을 <strong>15초로 압축</strong>해 원래 악보보다 빠르게 연주합니다. <code>15000UL</code>을 더 큰 값으로 바꾸면 빨간불과 연주 시간이 함께 길어집니다. 마지막 음 이후 소리를 끄고 노란불로 바뀝니다.</div><div class="actions"><button id="copyCode">코드 전체 복사</button><button id="downloadCode" class="secondary">.ino 다운로드</button><button id="printPage" class="secondary">인쇄 / PDF 저장</button><span id="copyStatus" role="status"></span></div><pre class="codebox"><code id="finalCode">// 2026-10-23 버튼 신호등 + 멜로디 부저
+// LED HIGH 점등 / INPUT_PULLUP / 수동 피에조 부저 기준
+const int red = 8;
+const int yellow = 9;
+const int green = 10;
+const int button = 2;
+const int buzzer = 11;
+
+// 제공된 악보 첫째·둘째 줄의 발췌. 0은 쉼표.
+// 사진 판독으로 옮긴 음이며 실제 연주 확인 전입니다.
+const int notes[] = {
+  294, 392, 466, 587, 587, 523, 466, 440, 466,
+  0, 392, 466, 587, 784, 784, 784, 698, 622, 698,
+  0, 440, 587, 698, 880, 784, 698, 659, 698,
+  784, 698, 659, 587, 523, 466, 523, 587, 523, 392, 440
+};
+
+// 길이 비율: 1=8분음표, 2=4분음표. 붙임줄은 합산.
+const int lengths[] = {
+  2, 2, 2, 4, 2, 2, 2, 2, 6,
+  3, 1, 1, 1, 4, 2, 2, 2, 2, 6,
+  3, 1, 1, 1, 4, 2, 2, 2, 2,
+  4, 2, 4, 2, 2, 2, 2, 2, 2, 2, 12
+};
+const int noteCount = sizeof(notes) / sizeof(notes[0]);
+
+void light(int pin)
+{
+  digitalWrite(red, LOW);
+  digitalWrite(yellow, LOW);
+  digitalWrite(green, LOW);
+  digitalWrite(pin, HIGH);
+}
+
+void playMusic()
+{
+  int totalUnits = 0;
+  for (int i = 0; i &lt; noteCount; i++) {
+    totalUnits += lengths[i];
+  }
+
+  unsigned long startedAt = millis();
+  int playedUnits = 0;
+
+  for (int i = 0; i &lt; noteCount; i++) {
+    playedUnits += lengths[i];
+    unsigned long endTime = 15000UL * playedUnits / totalUnits;
+    unsigned long elapsed = millis() - startedAt;
+    if (elapsed &gt;= endTime) continue;
+
+    unsigned long duration = endTime - elapsed;
+    if (notes[i] == 0) {
+      noTone(buzzer);
+    } else {
+      tone(buzzer, notes[i], duration * 95UL / 100UL);
+    }
+
+    while (millis() - startedAt &lt; endTime) {
+      delay(1);
+    }
+    noTone(buzzer);
+  }
+  digitalWrite(buzzer, LOW);
+}
+
+void setup()
+{
+  pinMode(red, OUTPUT);
+  pinMode(yellow, OUTPUT);
+  pinMode(green, OUTPUT);
+  pinMode(button, INPUT_PULLUP);
+  pinMode(buzzer, OUTPUT);
+  digitalWrite(buzzer, LOW);
+  light(green);
+}
+
+void loop()
+{
+  if (digitalRead(button) != LOW) return;
+  delay(30);
+  if (digitalRead(button) != LOW) return;
+
+  light(yellow);
+  delay(1000);
+  light(red);
+  playMusic();
+  light(yellow);
+  delay(1000);
+  light(green);
+
+  // 버튼을 놓은 상태가 30ms 유지되어야 다시 작동
+  unsigned long releasedAt = millis();
+  while (millis() - releasedAt &lt; 30) {
+    if (digitalRead(button) == LOW) releasedAt = millis();
+  }
+}
+</code></pre><h3>코드 읽는 순서</h3><ol><li><strong>핀 설정:</strong> LED 8·9·10, 버튼 2, 부저 11 지정</li><li><strong>light():</strong> 모두 끈 뒤 선택한 LED 하나만 켜기</li><li><strong>playMusic():</strong> 음 길이의 비율을 유지하면서 전체를 15초에 배분</li><li><strong>setup():</strong> 핀 모드 설정 후 초록불로 대기</li><li><strong>loop():</strong> 버튼 → 노랑 → 빨강·연주 → 노랑 → 초록</li><li><strong>해제 확인:</strong> 버튼을 누른 채로 있을 때 자동 반복 방지</li></ol><p class="fine">설명을 쉽게 하기 위해 delay()와 대기 반복문을 사용합니다. 다른 입력을 동시에 처리해야 한다면 millis() 기반 상태 제어로 확장할 수 있습니다.</p></section>
+<section id="check"><span class="num">07 / 실습 점검</span><h2>연결 → 개별 시험 → 전체 동작 확인</h2><ol><li><strong>USB 전원을 빼고 배선합니다.</strong> 핀 번호, 모듈 전원 사양, 부저 극성을 확인합니다.</li><li><strong>LED 단독 시험:</strong> HIGH 고정 코드로 세 색의 점등을 확인합니다.</li><li><strong>버튼 확인:</strong> 누르면 D2와 GND가 연결되는지 확인합니다.</li><li><strong>부저 단독 시험:</strong> 1초 소리 / 1초 무음 코드를 올립니다.</li><li><strong>최종 코드 업로드:</strong> IDE의 기존 코드를 모두 지우고 붙여 넣습니다. 보드와 포트를 선택하고 확인(컴파일), 업로드를 실행합니다.</li><li><strong>전체 순서 확인:</strong> 초록 대기 → 노랑 1초 → 빨강 15초·연주 → 노랑 1초 → 초록 복귀.</li><li><strong>누르고 있기 시험:</strong> 버튼을 놓기 전에는 다시 실행되지 않는지 확인합니다.</li></ol><div class="grid"><div class="card"><h3>컴파일 오류가 나면</h3><p><code>exit status 1</code> 위의 구체적인 오류 문장을 확인합니다. setup()/loop() 중복과 복사 특수문자를 점검하세요.</p></div><div class="card"><h3>업로드가 안 되면</h3><p>보드·포트 선택과 USB 케이블을 확인합니다. 업로드 실패와 컴파일 오류는 구분해서 기록합니다.</p></div></div></section>
+<p class="footer">2026년 10월 23일 실습 대화 기반 · 인터넷 없이 열 수 있는 단일 HTML · 미확인 부품 사양과 보드 검증 여부를 본문에 표시</p>
+</main>
+<script>
+const sketch = "// 2026-10-23 버튼 신호등 + 멜로디 부저\n// LED HIGH 점등 / INPUT_PULLUP / 수동 피에조 부저 기준\nconst int red = 8;\nconst int yellow = 9;\nconst int green = 10;\nconst int button = 2;\nconst int buzzer = 11;\n\n// 제공된 악보 첫째·둘째 줄의 발췌. 0은 쉼표.\n// 사진 판독으로 옮긴 음이며 실제 연주 확인 전입니다.\nconst int notes[] = {\n  294, 392, 466, 587, 587, 523, 466, 440, 466,\n  0, 392, 466, 587, 784, 784, 784, 698, 622, 698,\n  0, 440, 587, 698, 880, 784, 698, 659, 698,\n  784, 698, 659, 587, 523, 466, 523, 587, 523, 392, 440\n};\n\n// 길이 비율: 1=8분음표, 2=4분음표. 붙임줄은 합산.\nconst int lengths[] = {\n  2, 2, 2, 4, 2, 2, 2, 2, 6,\n  3, 1, 1, 1, 4, 2, 2, 2, 2, 6,\n  3, 1, 1, 1, 4, 2, 2, 2, 2,\n  4, 2, 4, 2, 2, 2, 2, 2, 2, 2, 12\n};\nconst int noteCount = sizeof(notes) / sizeof(notes[0]);\n\nvoid light(int pin)\n{\n  digitalWrite(red, LOW);\n  digitalWrite(yellow, LOW);\n  digitalWrite(green, LOW);\n  digitalWrite(pin, HIGH);\n}\n\nvoid playMusic()\n{\n  int totalUnits = 0;\n  for (int i = 0; i < noteCount; i++) {\n    totalUnits += lengths[i];\n  }\n\n  unsigned long startedAt = millis();\n  int playedUnits = 0;\n\n  for (int i = 0; i < noteCount; i++) {\n    playedUnits += lengths[i];\n    unsigned long endTime = 15000UL * playedUnits / totalUnits;\n    unsigned long elapsed = millis() - startedAt;\n    if (elapsed >= endTime) continue;\n\n    unsigned long duration = endTime - elapsed;\n    if (notes[i] == 0) {\n      noTone(buzzer);\n    } else {\n      tone(buzzer, notes[i], duration * 95UL / 100UL);\n    }\n\n    while (millis() - startedAt < endTime) {\n      delay(1);\n    }\n    noTone(buzzer);\n  }\n  digitalWrite(buzzer, LOW);\n}\n\nvoid setup()\n{\n  pinMode(red, OUTPUT);\n  pinMode(yellow, OUTPUT);\n  pinMode(green, OUTPUT);\n  pinMode(button, INPUT_PULLUP);\n  pinMode(buzzer, OUTPUT);\n  digitalWrite(buzzer, LOW);\n  light(green);\n}\n\nvoid loop()\n{\n  if (digitalRead(button) != LOW) return;\n  delay(30);\n  if (digitalRead(button) != LOW) return;\n\n  light(yellow);\n  delay(1000);\n  light(red);\n  playMusic();\n  light(yellow);\n  delay(1000);\n  light(green);\n\n  // 버튼을 놓은 상태가 30ms 유지되어야 다시 작동\n  unsigned long releasedAt = millis();\n  while (millis() - releasedAt < 30) {\n    if (digitalRead(button) == LOW) releasedAt = millis();\n  }\n}\n";
+document.getElementById('copyCode').addEventListener('click', async () => {
+  const status = document.getElementById('copyStatus');
+  try { await navigator.clipboard.writeText(sketch); status.textContent = '전체 코드를 복사했습니다.'; }
+  catch(e) {
+    const a = document.createElement('textarea'); a.value = sketch;
+    a.style.position = 'fixed'; a.style.opacity = '0';
+    document.body.appendChild(a); a.select();
+    const ok = document.execCommand('copy'); a.remove();
+    status.textContent = ok ? '전체 코드를 복사했습니다.' : '아래 코드를 직접 선택해 복사하세요.';
+  }
+});
+document.getElementById('downloadCode').addEventListener('click', () => {
+  const url = URL.createObjectURL(new Blob([sketch], {type:'text/plain;charset=utf-8'}));
+  const a = document.createElement('a'); a.href = url; a.download = 'traffic_light_lesson.ino';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+document.getElementById('printPage').addEventListener('click', () => window.print());
+let simTimer = null;
+const startButton = document.getElementById('simStart');
+function showState(color, title, detail) {
+  document.querySelectorAll('.lamp').forEach(e => e.classList.remove('active'));
+  document.getElementById('lamp-' + color).classList.add('active');
+  document.getElementById('simState').textContent = title;
+  document.getElementById('simDetail').textContent = detail;
+}
+function resetSim() {
+  clearInterval(simTimer); simTimer = null; startButton.disabled = false;
+  document.getElementById('simProgress').value = 0;
+  showState('green','초록불 · 입력 대기','버튼을 누르면 17초 동안 순서를 실행합니다. 화면 미리보기는 무음입니다.');
+}
+startButton.addEventListener('click', () => {
+  if(simTimer) return;
+  startButton.disabled = true;
+  const started = performance.now();
+  const tick = () => {
+    const elapsed = (performance.now() - started) / 1000;
+    document.getElementById('simProgress').value = Math.min(17, elapsed);
+    if(elapsed < 1) showState('yellow','노란불 · 1초','전환 준비 · 소리 없음');
+    else if(elapsed < 16) showState('red','빨간불 · ' + (16-elapsed).toFixed(1) + '초 남음','실제 회로에서는 이 구간에 멜로디가 재생됩니다.');
+    else if(elapsed < 17) showState('yellow','노란불 · 1초','멜로디 종료 · 소리 없음');
+    else {
+      clearInterval(simTimer); simTimer = null; startButton.disabled = false;
+      showState('green','초록불 · 복귀 완료','순서가 끝났습니다. 다시 버튼을 누를 수 있습니다.');
+    }
+  };
+  simTimer = setInterval(tick,100); tick();
+});
+document.getElementById('simReset').addEventListener('click', resetSim);
+</script></body></html>
